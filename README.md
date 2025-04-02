@@ -15,7 +15,7 @@ A script that automates firewall rules to enhance network security by blocking s
 ### **Installation & Usage**
 ```bash
 # Clone the repository
-git clone https://github.com/yourgithub/Firewall-Config.git
+git clone [https://github.com/yourgithub/Firewall-Config.git](https://github.com/JonathanM-Roman/Automated-Firewall-Configuration-Bash-Python-.git)
 cd Firewall-Config
 
 # Run the script

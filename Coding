@@ -2,22 +2,28 @@
 
 echo "Setting up firewall rules..."
 
-# Flush existing rules
-iptables -F
-iptables -X
-iptables -Z
+# Define the pf.conf file
+PF_CONF="/etc/pf.conf"
 
+# Flush existing pf rules (if any)
+pfctl -F all
+
+# Define the firewall rules
 echo "Blocking all incoming connections except SSH (port 22) and HTTP (port 80)"
-iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -p tcp --dport 443 -j ACCEPT
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -j DROP
+echo "pass in proto tcp from any to any port 22" >> $PF_CONF
+echo "pass in proto tcp from any to any port 80" >> $PF_CONF
+echo "pass in proto tcp from any to any port 443" >> $PF_CONF
+echo "pass in proto tcp from any to any state established" >> $PF_CONF
+echo "block in all" >> $PF_CONF
+
+# Apply the pf rules
+pfctl -f $PF_CONF
+pfctl -e
 
 echo "Allowing all outgoing traffic"
-iptables -A OUTPUT -j ACCEPT
+echo "pass out all" >> $PF_CONF
 
-# Save rules
-iptables-save > /etc/iptables.rules
+# Apply the outgoing rule
+pfctl -f $PF_CONF
 
 echo "Firewall rules applied successfully."
